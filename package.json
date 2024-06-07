@@ -1,0 +1,30 @@
+{
+  "name": "super-scraper",
+  "version": "1.0.0",
+  "description": "Submodule that can start configured puppeteer pages",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./tests/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eshmanski/super-scraper.git"
+  },
+  "keywords": [
+    "puppeteer",
+    "scraper",
+    "web"
+  ],
+  "author": "Eshmanski Pavel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Eshmanski/super-scraper/issues"
+  },
+  "homepage": "https://github.com/Eshmanski/super-scraper#readme",
+  "dependencies": {
+    "puppeteer": "^22.10.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "uniqid": "^5.4.0"
+  }
+}
