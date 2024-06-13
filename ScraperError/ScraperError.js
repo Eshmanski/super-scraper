@@ -1,10 +1,12 @@
 class ScraperError {
     EC = 'scraper';
     type;
+    message;
     error;
 
-    constructor(type, error) {
+    constructor(type, message) {
         this.type = type;
-        this.error = error;
+        this.message  = message;
+        this.error = new Error(message);
     }
 }
