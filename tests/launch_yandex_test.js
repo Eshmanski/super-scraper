@@ -4,9 +4,13 @@ async function start() {
     const pc = new PuppeteerConfigurator({ args: ["--no-sandbox"], headless: false });
 
     const browserId = await pc.createBrowser();
+    
+    const yPage = await pc.getYandexPage(browserId);
 
+    await yPage.config.removeInterface().setZoom(20).setLayers(['map:ground']);
+    
     await new Promise((resolve, reject) => {
-        setTimeout(resolve, 1000);
+        setTimeout(resolve, 10000);
     });
 
     pc.closeAllBrowsers();
