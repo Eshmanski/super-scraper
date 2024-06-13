@@ -1,6 +1,7 @@
 const uniqid = require('uniqid');
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+const YandexPage = require('../Scrapers/Yandex/Page');
 
 puppeteer.use(StealthPlugin());
 
@@ -22,6 +23,14 @@ class PuppeteerConfigurator {
         return id;
     };
 
+    async getYandexPage(id, options = {})   {
+        const browser  = id ? this.browsers.get(id) : this.createBrowser();
+
+        const yPage = await YandexPage.init(browser, options);
+        
+        return yPage;
+    };
+
     closeBrowser(id)  {
         const browser  = this.browsers.get(id);
 
@@ -37,7 +46,7 @@ class PuppeteerConfigurator {
         }
 
         this.browsers.clear();
-    }
+    };
 }
 
 module.exports = PuppeteerConfigurator;
