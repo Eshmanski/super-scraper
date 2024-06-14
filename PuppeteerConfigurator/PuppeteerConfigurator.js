@@ -2,6 +2,7 @@ const uniqid = require('uniqid');
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const YandexPage = require('../Scrapers/Yandex/Page');
+const NeftregionPage  = require('../Scrapers/Neftregion/Page');
 
 puppeteer.use(StealthPlugin());
 
@@ -30,6 +31,14 @@ class PuppeteerConfigurator {
         
         return yPage;
     };
+
+    async getNeftregionPage(id, options  = {})  {
+        const browser  = id ? this.browsers.get(id) : this.createBrowser();
+
+        const nPage = await NeftregionPage.init(browser, options);
+
+        return nPage;
+    }
 
     closeBrowser(id)  {
         const browser  = this.browsers.get(id);
