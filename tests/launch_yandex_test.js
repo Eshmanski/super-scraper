@@ -3,7 +3,6 @@ const PuppeteerConfigurator = require('../PuppeteerConfigurator/PuppeteerConfigu
 async function start() {
     const pc = new PuppeteerConfigurator({ args: ["--no-sandbox"], headless: false });
 
-    const browserId = await pc.createBrowser();
     
     const yPage = await pc.getYandexPage(browserId);
 

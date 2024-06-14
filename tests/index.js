@@ -2,6 +2,7 @@ const launchBrowserTest = require('./launch_browser_test.js');
 const launchYandexTest = require('./launch_yandex_test.js');
 const clickYandexTest = require('./click_point_yandex_test.js');
 const screenYandexTest = require('./screen_yandex_test.js');
+const launchNeftregionTest = require('./launch_neftregion_test.js');
 
 const argv = process.argv.filter(str => str[0] === '-');
 
@@ -14,6 +15,9 @@ async function check(type, value) {
                     break;
                 case 'ys':
                     await launchYandexTest();
+                    break;
+                case 'ns':
+                    await launchNeftregionTest();
                     break;
                 case 'ycp':
                     await clickYandexTest();
