@@ -6,7 +6,7 @@ class YandexScraper {
 
     constructor(page) {
         this.page = page;
-    }
+    };
 
     async getFetchData(coordinate) {
         let resListener = null;
@@ -86,7 +86,7 @@ class YandexScraper {
             image: nameFile,
             bbox: bBox,
         };
-    }
+    };
 
     formateData(data, coordinate) {
         const yandexData = {
@@ -101,7 +101,7 @@ class YandexScraper {
         };
 
         return yandexData;
-    }
+    };
 
     formateGeom(displayGeometry) {
         if (!displayGeometry) return undefined
@@ -126,7 +126,7 @@ class YandexScraper {
         });
 
         return newGeom;
-    }
+    };
 }
 
 module.exports = YandexScraper;

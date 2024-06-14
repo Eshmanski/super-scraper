@@ -1,7 +1,7 @@
 const sleep = require('../utils/sleep');
 const { KnownDevices } = require('puppeteer')
 const YandexConfigurator = require('./Configurator');
-const YandexScrapper  = require('./Scrapper');
+const YandexScrapper  = require('./Scraper');
 const ScraperError = require('../../ScraperError/ScraperError');
 
 class YandexPage {
@@ -21,14 +21,14 @@ class YandexPage {
         
         this.config = new YandexConfigurator(this);
         this.scrapper  = new YandexScrapper(page);
-    }
+    };
 
     static async init(browser, { size = [1000, 1000], mobile = true } = {}) {
         if (typeof size === 'string') size = size.split('X').map(Number);
 
         const page = await browser.newPage();
 
-        await page.emulate(KnownDevices['iPhone 6']);
+        if (mobile) await page.emulate(KnownDevices['iPhone 6']);
         await page.setViewport({ width: size[0], height: size[1] });
 
         const context = browser.defaultBrowserContext();
@@ -42,7 +42,7 @@ class YandexPage {
         await page.waitForSelector("input.input__control");
 
         return new YandexPage(page, browser, { size, mobile });
-    }
+    };
 
     async getClickData(coordinate) {
         if (isNaN(coordinate[0]) || isNaN(coordinate[1])) throw new ScraperError('InvalidCoordinate', `Invalid coordinate: ${coordinate}`);
@@ -56,7 +56,7 @@ class YandexPage {
         const formattedData = this.scrapper.formateData(data, coordinate);
 
         return formattedData;
-    }
+    };
 
     async getScreenshot(coordinate, pathToDir)  {
         if (isNaN(coordinate[0]) || isNaN(coordinate[1])) throw new ScraperError('InvalidCoordinate', `Invalid coordinate: ${coordinate}`);
@@ -66,7 +66,7 @@ class YandexPage {
         const data = await this.scrapper.getScreenshot(coordinate, pathToDir);
 
         return data;
-    }
+    };
 }
 
 module.exports = YandexPage;

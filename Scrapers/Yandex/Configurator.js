@@ -7,9 +7,9 @@ class YandexConfigurator {
         this.task = Promise.resolve(object);
     }
 
-    doTask(cb) { return this.task = this.task.then(cb);}
+    doTask(cb) { return this.task = this.task.then(cb); };
  
-    then(cb) { cb(this.task); }
+    then(cb) { cb(this.task); };
 
     removeInterface() {
         this.doTask(async () => {
@@ -30,7 +30,7 @@ class YandexConfigurator {
         });
 
         return this;
-    }
+    };
 
     setZoom(zoom)  {
         this.doTask(async  ()  =>  {
@@ -44,7 +44,7 @@ class YandexConfigurator {
         });
 
         return this;
-    }
+    };
 
     setLayers(layers) {
         this.doTask(async ()   =>   {
@@ -57,7 +57,7 @@ class YandexConfigurator {
         });
 
         return this;
-    }
+    };
 }
 
 module.exports = YandexConfigurator;
