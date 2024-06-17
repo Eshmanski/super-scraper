@@ -5,7 +5,8 @@ const YandexScrapper  = require('./Scraper');
 const ScraperError = require('../../ScraperError/ScraperError');
 
 class YandexPage {
-    browser;
+    pc;
+    id;
     page;
     config;
     scrapper;
@@ -14,8 +15,9 @@ class YandexPage {
 
     options;
 
-    constructor(page, browser, options){
-        this.browser= browser;
+    constructor(page, id, pc, options){
+        this.pc = pc;
+        this.id = id;
         this.page = page;
         this.options  = options;
         
@@ -23,7 +25,9 @@ class YandexPage {
         this.scrapper  = new YandexScrapper(page);
     };
 
-    static async init(browser, { size = [1000, 1000], mobile = true } = {}) {
+    static async init(id, pc, { size = [1000, 1000], mobile = true } = {}) {
+        const browser  =  await pc.getBrowser(id); 
+    
         if (typeof size === 'string') size = size.split('X').map(Number);
 
         const page = await browser.newPage();
@@ -41,31 +45,43 @@ class YandexPage {
 
         await page.waitForSelector("input.input__control");
 
-        return new YandexPage(page, browser, { size, mobile });
+        return new YandexPage(page, id, pc, { size, mobile });
     };
 
     async getClickData(coordinate) {
-        if (isNaN(coordinate[0]) || isNaN(coordinate[1])) throw new ScraperError('InvalidCoordinate', `Invalid coordinate: ${coordinate}`);
+        try {
+            if (isNaN(coordinate[0]) || isNaN(coordinate[1])) throw new ScraperError('InvalidCoordinate', `Invalid coordinate: ${coordinate}`);
 
-        await this.scrapper.moveToPoint(coordinate, this.options.zoom);
-
-        const data = await this.scrapper.getFetchData(coordinate);
-        
-        await this.scrapper.checkData(data, coordinate);
-
-        const formattedData = this.scrapper.formateData(data, coordinate);
-
-        return formattedData;
+            await this.scrapper.moveToPoint(coordinate, this.options.zoom);
+    
+            const data = await this.scrapper.getFetchData(coordinate);
+            
+            await this.scrapper.checkData(data, coordinate);
+    
+            const formattedData = this.scrapper.formateData(data, coordinate);
+    
+            return formattedData;
+        } catch (error) {
+            throw error; 
+        } finally {
+            this.pc.closeBrowser(this.id);
+        };
     };
 
     async getScreenshot(coordinate, pathToDir)  {
-        if (isNaN(coordinate[0]) || isNaN(coordinate[1])) throw new ScraperError('InvalidCoordinate', `Invalid coordinate: ${coordinate}`);
+        try {
+            if (isNaN(coordinate[0]) || isNaN(coordinate[1])) throw new ScraperError('InvalidCoordinate', `Invalid coordinate: ${coordinate}`);
 
-        await this.scrapper.moveToPoint(coordinate, this.options.zoom);
-
-        const data = await this.scrapper.getScreenshot(coordinate, pathToDir);
-
-        return data;
+            await this.scrapper.moveToPoint(coordinate, this.options.zoom);
+    
+            const data = await this.scrapper.getScreenshot(coordinate, pathToDir);
+    
+            return data;
+        } catch (error) {
+            throw error;
+        } finally {
+            this.pc.closeBrowser(this.id);
+        };
     };
 }
 

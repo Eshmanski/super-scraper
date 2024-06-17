@@ -4,22 +4,26 @@ const sleep = require('../utils/sleep');
 const { KnownDevices } = require('puppeteer')
 
 class NeftregionPage {
+    pc;
+    id;
     browser;
     page;
     config = null;
     scrapper;
 
 
-    constructor(page, browser, options){
-        this.browser= browser;
+    constructor(page, id, pc, options){
+        this.pc = pc;
+        this.id = id;
         this.page = page;
         this.options  = options;
         
-
         this.scrapper  = new NeftregionScraper(page);
     };
 
-    static async init(browser, { size = [1000, 1000], mobile = true } = {}) {
+    static async init(id, pc, { size = [1000, 1000], mobile = true } = {}) {
+        const browser  =  await pc.getBrowser(id);
+
         if (typeof size === 'string') size = size.split('X').map(Number);
 
         const page = await browser.newPage();
@@ -31,7 +35,7 @@ class NeftregionPage {
 
         await page.waitForSelector('#tableindex');
 
-        return new NeftregionPage(page, browser, { size, mobile });
+        return new NeftregionPage(page, id, pc, { size, mobile });
     };
 
     async getList() {
@@ -39,17 +43,23 @@ class NeftregionPage {
     };
 
     async getRegionData({ text, href }) {
-        await this.scrapper.gotoTable(href);
+        try {
+            await this.scrapper.gotoTable(href);
         
-        const data = await this.scrapper.getTableInfo();
-
-        for (const item  of  data)  {
-            const companyInfo = await this.scrapper.getCompanyInfo(item.company.url);
-
-            item.company = { ...item.company, ...companyInfo };
-        }
-
-        return data;
+            const data = await this.scrapper.getTableInfo();
+    
+            for (const item  of  data)  {
+                const companyInfo = await this.scrapper.getCompanyInfo(item.company.url);
+    
+                item.company = { ...item.company, ...companyInfo };
+            }
+    
+            return data;
+        } catch (error)  {
+            throw error;
+        } finally {
+            this.pc.closeBrowser(this.id);
+        };
     };
 }
 
