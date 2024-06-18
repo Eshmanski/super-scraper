@@ -31,7 +31,7 @@ class EvaluateFuncs {
         return fields;
     };
 
-    parseData(table, fields) {
+    async parseData(table, fields) {
         table = table.slice(1);
 
         const data = [];
@@ -43,11 +43,23 @@ class EvaluateFuncs {
                 address: null,
                 inn: null,
                 ogrn: null,
+                imgUrl: null,
+                imgBase64: null,
             };
 
             info = {};
             date = null;
         }
+
+        const toDataURL = url => fetch(url)
+            .then(response => response.blob())
+            .then(blob => new Promise((resolve, reject) => {
+                const reader = new FileReader()
+                
+                reader.onloadend = () => resolve(reader.result)
+                reader.onerror = reject
+                reader.readAsDataURL(blob)
+            }));
 
         let item = new Item();
 
@@ -61,6 +73,8 @@ class EvaluateFuncs {
 
                     item.company.url = logo.querySelector('a')?.href;
                     item.company.name = logo.querySelector('img')?.alt;
+                    item.company.imgUrl = logo.querySelector('img')?.src;
+                    item.company.imgBase64  = (await toDataURL(item.company.imgUrl).catch(err => console.log(err)))?.substring(0, 300);
 
                     item.date = new Date(update[1].textContent.split('.').reverse().join('-') + 'T' + update[2].textContent).toISOString();
                 case 2:
@@ -141,6 +155,36 @@ class EvaluateFuncs {
         if (addressText) info.address = addressText.match(/Адрес:?\s?(.*)\n/)?.[1];
 
         return info;
+    };
+
+    async getCompanyLogo() {
+        let data = {
+            imgUrl: null,
+            imgBase64: null,
+        };
+
+        const toDataURL = url => fetch(url)
+            .then(response => response.blob())
+            .then(blob => new Promise((resolve, reject) => {
+                const reader = new FileReader()
+                
+                reader.onloadend = () => resolve(reader.result)
+                reader.onerror = reject
+                reader.readAsDataURL(blob)
+            }));
+
+        const img = this.document.querySelector('.logoinfirms');
+
+        try {
+            if (img && img.src)  {
+                data.imgUrl  =  img.src;
+                data.imgBase64  =  (await toDataURL(img.src)).substring(0,  300);
+            };
+        } catch (err) {
+            console.log(err);
+        }
+
+        return data;
     }
 }
 
