@@ -56,9 +56,8 @@ class NeftregionPage {
     
             return data;
         } catch (error)  {
-            throw error;
-        } finally {
             this.pc.closeBrowser(this.id);
+            throw error;
         };
     };
 }

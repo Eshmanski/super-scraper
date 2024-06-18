@@ -26,7 +26,7 @@ class PuppeteerConfigurator {
     async createBrowser(options = {}) {
         const id = uniqid();
 
-        const browser = await puppeteer.launch(Object.assign({ userDataDir: path.resolve(this.tmpPath, `${id}`) }, options));
+        const browser = await puppeteer.launch(Object.assign({ userDataDir: path.resolve(this.tmpPath, `${id}`) }, this.options, options));
 
         this.browsers.set(id, browser);
 
@@ -34,7 +34,7 @@ class PuppeteerConfigurator {
     };
 
     async getYandexPage(id, options = {})   {
-        const browser  = id ? this.browsers.get(id) : this.createBrowser();
+        if (!id) id = await this.createBrowser();
 
         const yPage = await YandexPage.init(id, this, options);
         
@@ -42,7 +42,7 @@ class PuppeteerConfigurator {
     };
 
     async getNeftregionPage(id, options  = {})  {
-        const browser  = id ? this.browsers.get(id) : this.createBrowser();
+        if (!id) id = await this.createBrowser();
 
         const nPage = await NeftregionPage.init(id, this, options);
 
