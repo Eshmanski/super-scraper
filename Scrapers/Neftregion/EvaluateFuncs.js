@@ -74,7 +74,7 @@ class EvaluateFuncs {
                     item.company.url = logo.querySelector('a')?.href;
                     item.company.name = logo.querySelector('img')?.alt;
                     item.company.imgUrl = logo.querySelector('img')?.src;
-                    item.company.imgBase64  = (await toDataURL(item.company.imgUrl).catch(err => console.log(err)))?.substring(0, 300);
+                    item.company.imgBase64  = (await toDataURL(item.company.imgUrl).catch(err => console.log(err)));
 
                     item.date = new Date(update[1].textContent.split('.').reverse().join('-') + 'T' + update[2].textContent).toISOString();
                 case 2:
